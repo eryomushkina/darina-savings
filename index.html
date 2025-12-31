@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Копилка будущего Дарины</title>
-  <meta name="description" content="Подарки → инвестиции. Копим до 18 лет: BTC, ETH и другие инструменты." />
+  <meta name="description" content="Подарки → инвестиции. Копим до 18 лет: BTC, ETH и YDEX." />
   <style>
     :root{
       --bg1:#0b0b22;
@@ -14,13 +14,12 @@
       --line: rgba(255,255,255,.14);
       --text:#f6f3ff;
       --muted: rgba(246,243,255,.78);
-      --accent:#b77bff;      /* лило */
-      --accent2:#5ad8ff;     /* бирюза */
+      --accent:#b77bff;
+      --accent2:#5ad8ff;
       --good:#31e6a7;
       --bad:#ff5b8f;
       --shadow: 0 18px 50px rgba(0,0,0,.45);
     }
-
     *{ box-sizing:border-box; }
     body{
       margin:0;
@@ -34,10 +33,8 @@
       min-height:100vh;
       overflow-x:hidden;
     }
-
     .wrap{ max-width:980px; margin:0 auto; padding:26px 16px 64px; }
 
-    /* cute floating stars */
     .stars{
       position:fixed; inset:0; pointer-events:none; opacity:.55;
       background-image:
@@ -56,10 +53,7 @@
       display:flex; gap:14px; justify-content:space-between; align-items:flex-start; flex-wrap:wrap;
       margin-bottom:14px;
     }
-
-    .hero{
-      display:flex; gap:14px; align-items:flex-start;
-    }
+    .hero{ display:flex; gap:14px; align-items:flex-start; }
 
     .mascot{
       width:62px; height:62px; border-radius:18px;
@@ -69,10 +63,10 @@
       border:1px solid rgba(255,255,255,.18);
       box-shadow: var(--shadow);
       display:grid; place-items:center;
-      position:relative;
       overflow:hidden;
     }
     .mascot svg{ width:48px; height:48px; opacity:.95; }
+
     .title h1{ margin:0; font-size:28px; letter-spacing:.2px; }
     .title .sub{ margin-top:6px; color:var(--muted); line-height:1.45; max-width:720px; }
 
@@ -92,13 +86,7 @@
       box-shadow: 0 0 18px rgba(183,123,255,.65);
     }
 
-    .grid{
-      display:grid;
-      grid-template-columns:repeat(12,1fr);
-      gap:14px;
-      margin-top:14px;
-    }
-
+    .grid{ display:grid; grid-template-columns:repeat(12,1fr); gap:14px; margin-top:14px; }
     .card{
       grid-column:span 12;
       background: linear-gradient(180deg, var(--card), var(--card2));
@@ -110,10 +98,7 @@
     }
     .card h2{ margin:0 0 8px; font-size:16px; }
     .card p{ margin:0 0 10px; color:var(--muted); line-height:1.55; }
-
-    @media (min-width:760px){
-      .half{ grid-column:span 6; }
-    }
+    @media (min-width:760px){ .half{ grid-column:span 6; } }
 
     .chips{ display:flex; gap:8px; flex-wrap:wrap; margin-top:8px; }
     .chip{
@@ -125,9 +110,7 @@
       color:var(--text);
     }
 
-    .stats{
-      display:grid; grid-template-columns:repeat(12,1fr); gap:12px; margin-top:6px;
-    }
+    .stats{ display:grid; grid-template-columns:repeat(12,1fr); gap:12px; margin-top:6px; }
     .stat{
       grid-column:span 12;
       padding:12px 12px;
@@ -135,9 +118,7 @@
       border:1px solid rgba(255,255,255,.14);
       background: rgba(0,0,0,.18);
     }
-    @media (min-width:760px){
-      .stat{ grid-column:span 4; }
-    }
+    @media (min-width:760px){ .stat{ grid-column:span 4; } }
     .k{ color:var(--muted); font-size:12px; margin-bottom:4px; }
     .v{ font-size:18px; font-weight:800; letter-spacing:.2px; }
     .delta.good{ color:var(--good); }
@@ -189,14 +170,8 @@
     }
     tr:last-child td{ border-bottom:none; }
     td.num{ text-align:right; font-variant-numeric: tabular-nums; }
-    code{ color:#d8ccff; }
 
-    .footer{
-      margin-top:16px;
-      color:var(--muted);
-      font-size:12px;
-      line-height:1.5;
-    }
+    .footer{ margin-top:16px; color:var(--muted); font-size:12px; line-height:1.5; }
   </style>
 </head>
 
@@ -206,7 +181,6 @@
     <header>
       <div class="hero">
         <div class="mascot" aria-hidden="true">
-          <!-- cute “space creature” icon (original, not a character) -->
           <svg viewBox="0 0 64 64" fill="none">
             <path d="M32 55c13 0 23-9.4 23-22.2C55 19 44.7 9 32 9S9 19 9 32.8C9 45.6 19 55 32 55Z" fill="rgba(0,0,0,.18)" />
             <path d="M21 28c2.5-5 7-8 11-8s8.5 3 11 8" stroke="rgba(255,255,255,.70)" stroke-width="3" stroke-linecap="round"/>
@@ -229,10 +203,10 @@
         </div>
       </div>
 
-      <div class="pill" title="Текущие цены берём из CoinGecko (BTC и ETH)">
+      <div class="pill" title="Цены: BTC/ETH — CoinGecko, YDEX — MOEX">
         <span class="dot"></span>
-        <span><b>План:</b> 100€ на праздники</span>
-        <span id="lastUpdate">обновление цен…</span>
+        <span><b>Цены:</b> BTC / ETH / YDEX</span>
+        <span id="lastUpdate">обновление…</span>
       </div>
     </header>
 
@@ -259,9 +233,9 @@
       <section class="card half">
         <h2>Первый взнос</h2>
         <p>
-          <b>31.12.2025</b> я начала твою копилку.
-          На первые 100€ я купила: <b>50% ETH</b> и <b>50% BTC</b>.
-          Ниже — сколько всё это стоит сегодня.
+          <b>31.12.2025</b> я начала твою копилку: <b>100€</b> (это <b>9 280 ₽</b>).
+          На них я купила <b>1 акцию Яндекс (YDEX) — 4 567 ₽</b>,
+          и совсем чуть-чуть криптомонет: <b>ETH — 0,01</b> и <b>BTC — 0,00034</b>.
         </p>
 
         <div class="stats">
@@ -281,94 +255,105 @@
 
         <div class="btns">
           <button id="refreshBtn">Обновить цены</button>
-          <button id="toggleEURBtn" title="Переключить валюту">EUR / USD</button>
+          <button id="toggleCurrencyBtn" title="Переключить валюту">Валюта: EUR</button>
         </div>
 
         <div class="note">
-          Подсказка: если хочешь, мы можем добавлять “заметки дня” —
-          что происходило в мире и почему цена изменилась.
+          В режиме RUB всё считается “как есть” в рублях.
+          В EUR/USD цена YDEX переводится по фиксированному курсу: 100€ = 9 280 ₽.
         </div>
       </section>
 
       <section class="card">
-        <h2>Журнал инвестиций 📒</h2>
+        <h2>Что у нас есть сейчас 📒</h2>
         <p>
-          Здесь видно: <b>когда</b> я инвестировала, <b>что</b> купила, <b>по какой цене</b>,
-          и сколько это стоит <b>сегодня</b>.
+          Здесь видно: что куплено, сколько это стоит <b>сегодня</b>, и как меняется общая сумма.
         </p>
 
-        <table aria-label="Журнал инвестиций">
+        <table aria-label="Портфель">
           <thead>
             <tr>
               <th>Дата</th>
               <th>Повод</th>
-              <th class="num">Сумма</th>
               <th>Актив</th>
               <th class="num">Кол-во</th>
-              <th class="num">Цена покупки</th>
+              <th class="num">Покупка</th>
               <th class="num">Сегодня</th>
             </tr>
           </thead>
           <tbody id="rows">
-            <tr><td colspan="7" style="color:rgba(246,243,255,.78);font-size:12px;">загрузка…</td></tr>
+            <tr><td colspan="6" style="color:rgba(246,243,255,.78);font-size:12px;">загрузка…</td></tr>
           </tbody>
         </table>
 
         <div class="footer">
-          💡 Как добавлять новые взносы: внизу файла есть массив <code>deposits</code>.
-          Просто дописываешь туда одну строчку — и сайт всё посчитает сам.
+          Источники цен: BTC/ETH — CoinGecko, YDEX — Московская биржа (MOEX).
         </div>
       </section>
     </div>
   </div>
 
   <script>
-    // ====== ДАННЫЕ: добавляй взносы сюда ======
-    // Важно: впиши реальные amountAsset и priceAtBuy (после покупки).
-    const deposits = [
-      {
-        date: "2025-12-31",
-        occasion: "🎄 Новый год",
-        asset: "BTC",
-        amountAsset: 0.0000,  // ← впиши реальное количество BTC
-        amountFiat: 50,
-        priceAtBuy: 0         // ← цена BTC на момент покупки (в EUR или USD)
-      },
-      {
-        date: "2025-12-31",
-        occasion: "🎄 Новый год",
-        asset: "ETH",
-        amountAsset: 0.0000,  // ← впиши реальное количество ETH
-        amountFiat: 50,
-        priceAtBuy: 0         // ← цена ETH на момент покупки (в EUR или USD)
-      }
+    // 100€ = 9280₽ на 31.12.2025 (фиксируем для конвертации YDEX -> EUR/USD)
+    const EUR_TO_RUB_FIXED = 92.8;
+    const EUR_TO_USD_APPROX = 1.1; // приближение (если хочешь точнее — добавлю FX API)
+
+    const holdings = [
+      { date: "2025-12-31", occasion: "🎄 Новый год", asset: "YDEX", amount: 1, buyCostRUB: 4567 },
+      { date: "2025-12-31", occasion: "🎄 Новый год", asset: "ETH",  amount: 0.01, buyCostRUB: null },
+      { date: "2025-12-31", occasion: "🎄 Новый год", asset: "BTC",  amount: 0.00034, buyCostRUB: null }
     ];
 
-    // ====== НАСТРОЙКИ ======
-    let displayCurrency = "eur"; // "eur" или "usd"
-    const currencySymbol = c => (c === "eur" ? "€" : "$");
+    const investedEvent = { eur: 100, rub: 9280 };
 
-    // ====== ЦЕНЫ BTC/ETH (CoinGecko public API) ======
-    async function fetchPrices(currency) {
-      const url = new URL("https://api.coingecko.com/api/v3/simple/price");
-      url.searchParams.set("ids", "bitcoin,ethereum");
-      url.searchParams.set("vs_currencies", currency);
-      const r = await fetch(url.toString(), { method:"GET" });
-      if (!r.ok) throw new Error("Не удалось получить цены: " + r.status);
-      const data = await r.json();
-      return { BTC: data.bitcoin[currency], ETH: data.ethereum[currency] };
-    }
+    const CURRENCIES = ["eur", "usd", "rub"];
+    let displayCurrency = "eur";
+
+    const currencySymbol = c => (c === "eur" ? "€" : c === "usd" ? "$" : "₽");
 
     function fmtMoney(n, currency){
       if (!Number.isFinite(n)) return "—";
-      return `${n.toLocaleString("ru-RU", { maximumFractionDigits: 2 })} ${currencySymbol(currency)}`;
+      const maxFD = currency === "rub" ? 0 : 2;
+      return `${n.toLocaleString("ru-RU", { maximumFractionDigits: maxFD })} ${currencySymbol(currency)}`;
     }
     function fmtNum(n, digits=8){
       if (!Number.isFinite(n)) return "—";
       return n.toLocaleString("ru-RU", { maximumFractionDigits: digits });
     }
-    function sumInvested(){
-      return deposits.reduce((s,d)=> s + (Number(d.amountFiat)||0), 0);
+
+    async function fetchCryptoPrices(currency) {
+      const url = new URL("https://api.coingecko.com/api/v3/simple/price");
+      url.searchParams.set("ids", "bitcoin,ethereum");
+      url.searchParams.set("vs_currencies", currency);
+      const r = await fetch(url.toString(), { method:"GET" });
+      if (!r.ok) throw new Error("Не удалось получить цены крипты: " + r.status);
+      const data = await r.json();
+      return { BTC: data.bitcoin[currency], ETH: data.ethereum[currency] };
+    }
+
+    async function fetchYdexLastRUB() {
+      const url = "https://iss.moex.com/iss/engines/stock/markets/shares/securities/YDEX.json?iss.meta=off&iss.only=marketdata&marketdata.columns=LAST";
+      const r = await fetch(url, { method:"GET" });
+      if (!r.ok) throw new Error("Не удалось получить цену YDEX: " + r.status);
+      const data = await r.json();
+      const rows = data?.marketdata?.data || [];
+      const last = rows?.[0]?.[0];
+      if (!Number.isFinite(last)) throw new Error("Не удалось разобрать LAST для YDEX");
+      return last;
+    }
+
+    function rubToCurrency(rub, currency){
+      if (!Number.isFinite(rub)) return NaN;
+      if (currency === "rub") return rub;
+      const eur = rub / EUR_TO_RUB_FIXED;
+      if (currency === "eur") return eur;
+      return eur * EUR_TO_USD_APPROX;
+    }
+
+    function investedTotalInCurrency(currency){
+      if (currency === "rub") return investedEvent.rub;
+      if (currency === "eur") return investedEvent.eur;
+      return investedEvent.eur * EUR_TO_USD_APPROX;
     }
 
     function buildTable(prices){
@@ -376,19 +361,31 @@
       tbody.innerHTML = "";
       let currentTotal = 0;
 
-      for (const d of deposits){
-        const pNow = prices[d.asset];
-        const nowValue = (Number(d.amountAsset)||0) * (Number(pNow)||0);
+      for (const h of holdings){
+        let nowValue = 0;
+
+        if (h.asset === "BTC" || h.asset === "ETH"){
+          const p = prices[h.asset];
+          nowValue = (Number(h.amount)||0) * (Number(p)||0);
+        } else if (h.asset === "YDEX"){
+          const rubValue = (Number(h.amount)||0) * (Number(prices.YDEX_RUB)||0);
+          nowValue = rubToCurrency(rubValue, displayCurrency);
+        }
+
         currentTotal += nowValue;
+
+        let buyCost = "—";
+        if (Number.isFinite(h.buyCostRUB)){
+          buyCost = fmtMoney(rubToCurrency(h.buyCostRUB, displayCurrency), displayCurrency);
+        }
 
         const tr = document.createElement("tr");
         tr.innerHTML = `
-          <td>${d.date}</td>
-          <td>${d.occasion}</td>
-          <td class="num">${fmtMoney(Number(d.amountFiat)||0, displayCurrency)}</td>
-          <td>${d.asset}</td>
-          <td class="num">${fmtNum(Number(d.amountAsset)||0, 8)}</td>
-          <td class="num">${fmtMoney(Number(d.priceAtBuy)||0, displayCurrency)}</td>
+          <td>${h.date}</td>
+          <td>${h.occasion}</td>
+          <td>${h.asset}</td>
+          <td class="num">${fmtNum(Number(h.amount)||0, 8)}</td>
+          <td class="num">${buyCost}</td>
           <td class="num">${fmtMoney(nowValue, displayCurrency)}</td>
         `;
         tbody.appendChild(tr);
@@ -413,28 +410,38 @@
 
     async function refresh(){
       try{
-        setLastUpdate("обновление цен…");
-        const prices = await fetchPrices(displayCurrency);
-        const invested = sumInvested();
+        setLastUpdate("обновление…");
+
+        const crypto = await fetchCryptoPrices(displayCurrency);
+        const ydexRub = await fetchYdexLastRUB();
+
+        const prices = { BTC: crypto.BTC, ETH: crypto.ETH, YDEX_RUB: ydexRub };
+
+        const invested = investedTotalInCurrency(displayCurrency);
         const current = buildTable(prices);
         setSummary(invested, current);
 
         const t = new Date();
         setLastUpdate("обновлено: " + t.toLocaleString("ru-RU"));
       }catch(e){
-        setLastUpdate("ошибка обновления цен");
+        setLastUpdate("ошибка обновления");
         const tbody = document.getElementById("rows");
-        tbody.innerHTML = `<tr><td colspan="7" style="color:rgba(246,243,255,.78);font-size:12px;">Не удалось загрузить цены. Проверь интернет или попробуй позже.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="6" style="color:rgba(246,243,255,.78);font-size:12px;">Не удалось загрузить цены. Проверь интернет или попробуй позже.</td></tr>`;
         console.error(e);
       }
     }
 
     document.getElementById("refreshBtn").addEventListener("click", refresh);
-    document.getElementById("toggleEURBtn").addEventListener("click", async () => {
-      displayCurrency = (displayCurrency === "eur") ? "usd" : "eur";
+
+    document.getElementById("toggleCurrencyBtn").addEventListener("click", async () => {
+      const idx = CURRENCIES.indexOf(displayCurrency);
+      displayCurrency = CURRENCIES[(idx + 1) % CURRENCIES.length];
+      document.getElementById("toggleCurrencyBtn").textContent =
+        "Валюта: " + (displayCurrency === "eur" ? "EUR" : displayCurrency === "usd" ? "USD" : "RUB");
       await refresh();
     });
 
+    document.getElementById("toggleCurrencyBtn").textContent = "Валюта: EUR";
     refresh();
   </script>
 </body>
