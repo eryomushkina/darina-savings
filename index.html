@@ -300,8 +300,8 @@
 
     const holdings = [
       { date: "2025-12-31", occasion: "🎄 Новый год", asset: "YDEX", amount: 1, buyCostRUB: 4567 },
-      { date: "2025-12-31", occasion: "🎄 Новый год", asset: "ETH",  amount: 0.01, buyCostRUB: null },
-      { date: "2025-12-31", occasion: "🎄 Новый год", asset: "BTC",  amount: 0.00034, buyCostRUB: null }
+      { date: "2025-12-31", occasion: "🎄 Новый год", asset: "ETH",  amount: 0.01, buyCostRUB: 2356 },
+      { date: "2025-12-31", occasion: "🎄 Новый год", asset: "BTC",  amount: 0.00034, buyCostRUB: 2357 }
     ];
 
     const investedEvent = { eur: 100, rub: 9280 };
@@ -337,7 +337,14 @@
       if (!r.ok) throw new Error("Не удалось получить цену YDEX: " + r.status);
       const data = await r.json();
       const rows = data?.marketdata?.data || [];
-      const last = rows?.[0]?.[0];
+      // Find first non-null value in rows
+      let last = null;
+      for (const row of rows) {
+        if (Number.isFinite(row[0])) {
+          last = row[0];
+          break;
+        }
+      }
       if (!Number.isFinite(last)) throw new Error("Не удалось разобрать LAST для YDEX");
       return last;
     }
