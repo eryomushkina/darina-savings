@@ -1,0 +1,441 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Копилка будущего Дарины</title>
+  <meta name="description" content="Подарки → инвестиции. Копим до 18 лет: BTC, ETH и другие инструменты." />
+  <style>
+    :root{
+      --bg1:#0b0b22;
+      --bg2:#120b2d;
+      --card: rgba(255,255,255,.08);
+      --card2: rgba(255,255,255,.06);
+      --line: rgba(255,255,255,.14);
+      --text:#f6f3ff;
+      --muted: rgba(246,243,255,.78);
+      --accent:#b77bff;      /* лило */
+      --accent2:#5ad8ff;     /* бирюза */
+      --good:#31e6a7;
+      --bad:#ff5b8f;
+      --shadow: 0 18px 50px rgba(0,0,0,.45);
+    }
+
+    *{ box-sizing:border-box; }
+    body{
+      margin:0;
+      color:var(--text);
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, "Noto Sans", "Liberation Sans", sans-serif;
+      background:
+        radial-gradient(900px 520px at 18% 8%, rgba(183,123,255,.35), transparent 60%),
+        radial-gradient(780px 520px at 82% 18%, rgba(90,216,255,.25), transparent 60%),
+        radial-gradient(1200px 900px at 50% 120%, rgba(255,91,143,.10), transparent 62%),
+        linear-gradient(180deg, var(--bg1), var(--bg2));
+      min-height:100vh;
+      overflow-x:hidden;
+    }
+
+    .wrap{ max-width:980px; margin:0 auto; padding:26px 16px 64px; }
+
+    /* cute floating stars */
+    .stars{
+      position:fixed; inset:0; pointer-events:none; opacity:.55;
+      background-image:
+        radial-gradient(2px 2px at 10% 20%, rgba(255,255,255,.9) 40%, transparent 45%),
+        radial-gradient(2px 2px at 35% 70%, rgba(255,255,255,.8) 40%, transparent 45%),
+        radial-gradient(1.5px 1.5px at 72% 24%, rgba(255,255,255,.85) 40%, transparent 45%),
+        radial-gradient(2px 2px at 88% 66%, rgba(255,255,255,.75) 40%, transparent 45%),
+        radial-gradient(1.5px 1.5px at 56% 44%, rgba(255,255,255,.65) 40%, transparent 45%),
+        radial-gradient(1.5px 1.5px at 22% 48%, rgba(255,255,255,.7) 40%, transparent 45%);
+      filter: blur(.1px);
+      animation: twinkle 6s ease-in-out infinite alternate;
+    }
+    @keyframes twinkle { from{opacity:.35} to{opacity:.7} }
+
+    header{
+      display:flex; gap:14px; justify-content:space-between; align-items:flex-start; flex-wrap:wrap;
+      margin-bottom:14px;
+    }
+
+    .hero{
+      display:flex; gap:14px; align-items:flex-start;
+    }
+
+    .mascot{
+      width:62px; height:62px; border-radius:18px;
+      background:
+        radial-gradient(18px 18px at 30% 30%, rgba(255,255,255,.6), transparent 60%),
+        linear-gradient(135deg, rgba(90,216,255,.55), rgba(183,123,255,.55));
+      border:1px solid rgba(255,255,255,.18);
+      box-shadow: var(--shadow);
+      display:grid; place-items:center;
+      position:relative;
+      overflow:hidden;
+    }
+    .mascot svg{ width:48px; height:48px; opacity:.95; }
+    .title h1{ margin:0; font-size:28px; letter-spacing:.2px; }
+    .title .sub{ margin-top:6px; color:var(--muted); line-height:1.45; max-width:720px; }
+
+    .pill{
+      padding:10px 12px;
+      border:1px solid var(--line);
+      border-radius:14px;
+      background: rgba(255,255,255,.06);
+      box-shadow: 0 10px 26px rgba(0,0,0,.25);
+      font-size:13px;
+      color:var(--muted);
+      display:flex; gap:10px; align-items:center; flex-wrap:wrap;
+    }
+    .dot{
+      width:10px; height:10px; border-radius:50%;
+      background: linear-gradient(90deg, var(--accent2), var(--accent));
+      box-shadow: 0 0 18px rgba(183,123,255,.65);
+    }
+
+    .grid{
+      display:grid;
+      grid-template-columns:repeat(12,1fr);
+      gap:14px;
+      margin-top:14px;
+    }
+
+    .card{
+      grid-column:span 12;
+      background: linear-gradient(180deg, var(--card), var(--card2));
+      border:1px solid var(--line);
+      border-radius:20px;
+      padding:16px 16px 14px;
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(8px);
+    }
+    .card h2{ margin:0 0 8px; font-size:16px; }
+    .card p{ margin:0 0 10px; color:var(--muted); line-height:1.55; }
+
+    @media (min-width:760px){
+      .half{ grid-column:span 6; }
+    }
+
+    .chips{ display:flex; gap:8px; flex-wrap:wrap; margin-top:8px; }
+    .chip{
+      padding:6px 10px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.16);
+      background: rgba(255,255,255,.06);
+      font-size:12px;
+      color:var(--text);
+    }
+
+    .stats{
+      display:grid; grid-template-columns:repeat(12,1fr); gap:12px; margin-top:6px;
+    }
+    .stat{
+      grid-column:span 12;
+      padding:12px 12px;
+      border-radius:16px;
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(0,0,0,.18);
+    }
+    @media (min-width:760px){
+      .stat{ grid-column:span 4; }
+    }
+    .k{ color:var(--muted); font-size:12px; margin-bottom:4px; }
+    .v{ font-size:18px; font-weight:800; letter-spacing:.2px; }
+    .delta.good{ color:var(--good); }
+    .delta.bad{ color:var(--bad); }
+
+    .btns{ display:flex; gap:10px; flex-wrap:wrap; margin-top:10px; }
+    button{
+      cursor:pointer;
+      border-radius:14px;
+      padding:10px 12px;
+      border:1px solid rgba(183,123,255,.40);
+      background: rgba(183,123,255,.14);
+      color:var(--text);
+      font-weight:700;
+    }
+    button:hover{ background: rgba(183,123,255,.22); }
+
+    .note{
+      margin-top:10px;
+      padding:10px 12px;
+      border-radius:16px;
+      border:1px dashed rgba(255,255,255,.22);
+      background: rgba(0,0,0,.14);
+      color:var(--muted);
+      font-size:12px;
+      line-height:1.45;
+    }
+
+    table{
+      width:100%;
+      border-collapse:separate;
+      border-spacing:0;
+      overflow:hidden;
+      border-radius:16px;
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(0,0,0,.14);
+      margin-top:10px;
+    }
+    th,td{
+      padding:10px 10px;
+      border-bottom:1px solid rgba(255,255,255,.10);
+      font-size:13px;
+    }
+    th{
+      color:var(--muted);
+      text-align:left;
+      font-weight:700;
+      background: rgba(255,255,255,.05);
+    }
+    tr:last-child td{ border-bottom:none; }
+    td.num{ text-align:right; font-variant-numeric: tabular-nums; }
+    code{ color:#d8ccff; }
+
+    .footer{
+      margin-top:16px;
+      color:var(--muted);
+      font-size:12px;
+      line-height:1.5;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="stars"></div>
+  <div class="wrap">
+    <header>
+      <div class="hero">
+        <div class="mascot" aria-hidden="true">
+          <!-- cute “space creature” icon (original, not a character) -->
+          <svg viewBox="0 0 64 64" fill="none">
+            <path d="M32 55c13 0 23-9.4 23-22.2C55 19 44.7 9 32 9S9 19 9 32.8C9 45.6 19 55 32 55Z" fill="rgba(0,0,0,.18)" />
+            <path d="M21 28c2.5-5 7-8 11-8s8.5 3 11 8" stroke="rgba(255,255,255,.70)" stroke-width="3" stroke-linecap="round"/>
+            <path d="M20 16c-2 2-3 5-2 8" stroke="rgba(255,255,255,.55)" stroke-width="3" stroke-linecap="round"/>
+            <path d="M44 16c2 2 3 5 2 8" stroke="rgba(255,255,255,.55)" stroke-width="3" stroke-linecap="round"/>
+            <circle cx="25.5" cy="33.5" r="4.2" fill="rgba(255,255,255,.92)"/>
+            <circle cx="38.5" cy="33.5" r="4.2" fill="rgba(255,255,255,.92)"/>
+            <circle cx="27" cy="34.5" r="1.6" fill="rgba(0,0,0,.55)"/>
+            <circle cx="40" cy="34.5" r="1.6" fill="rgba(0,0,0,.55)"/>
+            <path d="M28 44c2 2 6 2 8 0" stroke="rgba(255,255,255,.75)" stroke-width="3" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <div class="title">
+          <h1>Копилка будущего Дарины ✨</h1>
+          <div class="sub">
+            Дарина, привет! С этого дня мои подарки — это <b>инвестиции в твоё будущее</b>.
+            Мы будем копить до твоих 18 лет в разных инструментах и учиться вместе:
+            смотреть рост, спады и понимать, как работает время.
+          </div>
+        </div>
+      </div>
+
+      <div class="pill" title="Текущие цены берём из CoinGecko (BTC и ETH)">
+        <span class="dot"></span>
+        <span><b>План:</b> 100€ на праздники</span>
+        <span id="lastUpdate">обновление цен…</span>
+      </div>
+    </header>
+
+    <div class="grid">
+      <section class="card half">
+        <h2>Правила нашего «космического сундука» 🌺🚀</h2>
+        <p>
+          Каждый год на праздники я инвестирую <b>100€</b>.
+          Иногда стоимость будет расти, иногда падать — и это нормально.
+          Мы не играем в «быстрые деньги», мы выращиваем <b>долгую свободу</b>.
+        </p>
+        <div class="chips">
+          <span class="chip">🎄 Новый год — 100€</span>
+          <span class="chip">🌷 8 марта — 100€</span>
+          <span class="chip">🎂 День рождения — 100€</span>
+          <span class="chip">📈 Раз в год индексируем</span>
+        </div>
+        <div class="note">
+          Важное правило: когда рынок падает — мы не паникуем.
+          Мы наблюдаем и учимся терпению 💜
+        </div>
+      </section>
+
+      <section class="card half">
+        <h2>Первый взнос</h2>
+        <p>
+          <b>31.12.2025</b> я начала твою копилку.
+          На первые 100€ я купила: <b>50% ETH</b> и <b>50% BTC</b>.
+          Ниже — сколько всё это стоит сегодня.
+        </p>
+
+        <div class="stats">
+          <div class="stat">
+            <div class="k">Всего вложено</div>
+            <div class="v" id="investedTotal">—</div>
+          </div>
+          <div class="stat">
+            <div class="k">Текущая стоимость</div>
+            <div class="v" id="currentTotal">—</div>
+          </div>
+          <div class="stat">
+            <div class="k">Изменение</div>
+            <div class="v" id="deltaTotal">—</div>
+          </div>
+        </div>
+
+        <div class="btns">
+          <button id="refreshBtn">Обновить цены</button>
+          <button id="toggleEURBtn" title="Переключить валюту">EUR / USD</button>
+        </div>
+
+        <div class="note">
+          Подсказка: если хочешь, мы можем добавлять “заметки дня” —
+          что происходило в мире и почему цена изменилась.
+        </div>
+      </section>
+
+      <section class="card">
+        <h2>Журнал инвестиций 📒</h2>
+        <p>
+          Здесь видно: <b>когда</b> я инвестировала, <b>что</b> купила, <b>по какой цене</b>,
+          и сколько это стоит <b>сегодня</b>.
+        </p>
+
+        <table aria-label="Журнал инвестиций">
+          <thead>
+            <tr>
+              <th>Дата</th>
+              <th>Повод</th>
+              <th class="num">Сумма</th>
+              <th>Актив</th>
+              <th class="num">Кол-во</th>
+              <th class="num">Цена покупки</th>
+              <th class="num">Сегодня</th>
+            </tr>
+          </thead>
+          <tbody id="rows">
+            <tr><td colspan="7" style="color:rgba(246,243,255,.78);font-size:12px;">загрузка…</td></tr>
+          </tbody>
+        </table>
+
+        <div class="footer">
+          💡 Как добавлять новые взносы: внизу файла есть массив <code>deposits</code>.
+          Просто дописываешь туда одну строчку — и сайт всё посчитает сам.
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <script>
+    // ====== ДАННЫЕ: добавляй взносы сюда ======
+    // Важно: впиши реальные amountAsset и priceAtBuy (после покупки).
+    const deposits = [
+      {
+        date: "2025-12-31",
+        occasion: "🎄 Новый год",
+        asset: "BTC",
+        amountAsset: 0.0000,  // ← впиши реальное количество BTC
+        amountFiat: 50,
+        priceAtBuy: 0         // ← цена BTC на момент покупки (в EUR или USD)
+      },
+      {
+        date: "2025-12-31",
+        occasion: "🎄 Новый год",
+        asset: "ETH",
+        amountAsset: 0.0000,  // ← впиши реальное количество ETH
+        amountFiat: 50,
+        priceAtBuy: 0         // ← цена ETH на момент покупки (в EUR или USD)
+      }
+    ];
+
+    // ====== НАСТРОЙКИ ======
+    let displayCurrency = "eur"; // "eur" или "usd"
+    const currencySymbol = c => (c === "eur" ? "€" : "$");
+
+    // ====== ЦЕНЫ BTC/ETH (CoinGecko public API) ======
+    async function fetchPrices(currency) {
+      const url = new URL("https://api.coingecko.com/api/v3/simple/price");
+      url.searchParams.set("ids", "bitcoin,ethereum");
+      url.searchParams.set("vs_currencies", currency);
+      const r = await fetch(url.toString(), { method:"GET" });
+      if (!r.ok) throw new Error("Не удалось получить цены: " + r.status);
+      const data = await r.json();
+      return { BTC: data.bitcoin[currency], ETH: data.ethereum[currency] };
+    }
+
+    function fmtMoney(n, currency){
+      if (!Number.isFinite(n)) return "—";
+      return `${n.toLocaleString("ru-RU", { maximumFractionDigits: 2 })} ${currencySymbol(currency)}`;
+    }
+    function fmtNum(n, digits=8){
+      if (!Number.isFinite(n)) return "—";
+      return n.toLocaleString("ru-RU", { maximumFractionDigits: digits });
+    }
+    function sumInvested(){
+      return deposits.reduce((s,d)=> s + (Number(d.amountFiat)||0), 0);
+    }
+
+    function buildTable(prices){
+      const tbody = document.getElementById("rows");
+      tbody.innerHTML = "";
+      let currentTotal = 0;
+
+      for (const d of deposits){
+        const pNow = prices[d.asset];
+        const nowValue = (Number(d.amountAsset)||0) * (Number(pNow)||0);
+        currentTotal += nowValue;
+
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td>${d.date}</td>
+          <td>${d.occasion}</td>
+          <td class="num">${fmtMoney(Number(d.amountFiat)||0, displayCurrency)}</td>
+          <td>${d.asset}</td>
+          <td class="num">${fmtNum(Number(d.amountAsset)||0, 8)}</td>
+          <td class="num">${fmtMoney(Number(d.priceAtBuy)||0, displayCurrency)}</td>
+          <td class="num">${fmtMoney(nowValue, displayCurrency)}</td>
+        `;
+        tbody.appendChild(tr);
+      }
+
+      return currentTotal;
+    }
+
+    function setSummary(invested, current){
+      document.getElementById("investedTotal").textContent = fmtMoney(invested, displayCurrency);
+      document.getElementById("currentTotal").textContent = fmtMoney(current, displayCurrency);
+
+      const delta = current - invested;
+      const pct = invested > 0 ? (delta / invested) * 100 : 0;
+
+      const el = document.getElementById("deltaTotal");
+      const cls = delta >= 0 ? "good" : "bad";
+      el.innerHTML = `<span class="delta ${cls}">${fmtMoney(delta, displayCurrency)} (${pct.toLocaleString("ru-RU",{maximumFractionDigits:2})}%)</span>`;
+    }
+
+    function setLastUpdate(text){ document.getElementById("lastUpdate").textContent = text; }
+
+    async function refresh(){
+      try{
+        setLastUpdate("обновление цен…");
+        const prices = await fetchPrices(displayCurrency);
+        const invested = sumInvested();
+        const current = buildTable(prices);
+        setSummary(invested, current);
+
+        const t = new Date();
+        setLastUpdate("обновлено: " + t.toLocaleString("ru-RU"));
+      }catch(e){
+        setLastUpdate("ошибка обновления цен");
+        const tbody = document.getElementById("rows");
+        tbody.innerHTML = `<tr><td colspan="7" style="color:rgba(246,243,255,.78);font-size:12px;">Не удалось загрузить цены. Проверь интернет или попробуй позже.</td></tr>`;
+        console.error(e);
+      }
+    }
+
+    document.getElementById("refreshBtn").addEventListener("click", refresh);
+    document.getElementById("toggleEURBtn").addEventListener("click", async () => {
+      displayCurrency = (displayCurrency === "eur") ? "usd" : "eur";
+      await refresh();
+    });
+
+    refresh();
+  </script>
+</body>
+</html>
