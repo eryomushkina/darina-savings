@@ -260,7 +260,7 @@
 
         <div class="note">
           В режиме RUB всё считается “как есть” в рублях.
-          В EUR/USD цена YDEX переводится по фиксированному курсу: 100€ = 9 280 ₽.
+          В EUR/USD: курс EUR/USD обновляется в реальном времени (ECB). Курс RUB фиксирован: 92.8 RUB/EUR.
         </div>
       </section>
 
@@ -298,6 +298,19 @@
     const EUR_TO_RUB_FIXED = 92.8;
     const EUR_TO_USD_APPROX = 1.1; // приближение (если хочешь точнее — добавлю FX API)
 
+    // Exchange rates cache: historical (by date) and current (live)
+    const exchangeRates = {
+      historical: {
+        "2025-12-31": null  // будет загружен из API
+      },
+      current: {
+        eur_to_rub: null,
+        eur_to_usd: null,
+        usd_to_rub: null,
+        lastFetch: null
+      }
+    };
+
     const holdings = [
       { date: "2025-12-31", occasion: "🎄 Новый год", asset: "YDEX", amount: 1, buyCostRUB: 4567 },
       { date: "2025-12-31", occasion: "🎄 Новый год", asset: "ETH",  amount: 0.01, buyCostRUB: 2356 },
@@ -319,6 +332,61 @@
     function fmtNum(n, digits=8){
       if (!Number.isFinite(n)) return "—";
       return n.toLocaleString("ru-RU", { maximumFractionDigits: digits });
+    }
+
+    async function fetchExchangeRates(date = null) {
+      // Fetch exchange rates from Frankfurter API (ECB data, free, unlimited)
+      // Note: ECB stopped publishing RUB rates after 2022, so we use fixed rate for RUB
+      // date format: "YYYY-MM-DD" or null for latest
+      const endpoint = date
+        ? `https://api.frankfurter.app/${date}?from=EUR&to=USD`
+        : `https://api.frankfurter.app/latest?from=EUR&to=USD`;
+
+      const r = await fetch(endpoint, { method: "GET" });
+      if (!r.ok) throw new Error(`FX API error: ${r.status}`);
+
+      const data = await r.json();
+      // Use fixed RUB rate since ECB no longer publishes it (post-sanctions)
+      const eur_to_usd = data.rates.USD;
+      return {
+        eur_to_rub: EUR_TO_RUB_FIXED,  // Using fixed rate for RUB
+        eur_to_usd: eur_to_usd,
+        usd_to_rub: EUR_TO_RUB_FIXED / eur_to_usd
+      };
+    }
+
+    async function initializeExchangeRates() {
+      // Fetch historical rates for all unique purchase dates
+      const uniqueDates = [...new Set(holdings.map(h => h.date))];
+
+      for (const date of uniqueDates) {
+        if (!exchangeRates.historical[date]) {
+          try {
+            exchangeRates.historical[date] = await fetchExchangeRates(date);
+          } catch (e) {
+            console.warn(`Failed to fetch historical rate for ${date}, using fallback`);
+            exchangeRates.historical[date] = {
+              eur_to_rub: EUR_TO_RUB_FIXED,
+              eur_to_usd: EUR_TO_USD_APPROX,
+              usd_to_rub: EUR_TO_RUB_FIXED / EUR_TO_USD_APPROX
+            };
+          }
+        }
+      }
+
+      // Fetch current rates
+      try {
+        const current = await fetchExchangeRates(null);
+        exchangeRates.current = { ...current, lastFetch: new Date() };
+      } catch (e) {
+        console.warn("Failed to fetch current rates, using fallback");
+        exchangeRates.current = {
+          eur_to_rub: EUR_TO_RUB_FIXED,
+          eur_to_usd: EUR_TO_USD_APPROX,
+          usd_to_rub: EUR_TO_RUB_FIXED / EUR_TO_USD_APPROX,
+          lastFetch: new Date()
+        };
+      }
     }
 
     async function fetchCryptoPrices(currency) {
@@ -349,18 +417,38 @@
       return last;
     }
 
-    function rubToCurrency(rub, currency){
+    function rubToCurrency(rub, currency, useHistorical = false, date = null){
       if (!Number.isFinite(rub)) return NaN;
       if (currency === "rub") return rub;
-      const eur = rub / EUR_TO_RUB_FIXED;
+
+      // Determine which rate to use
+      let rate;
+      if (useHistorical && date && exchangeRates.historical[date]) {
+        rate = exchangeRates.historical[date];
+      } else if (!useHistorical && exchangeRates.current.eur_to_rub) {
+        rate = exchangeRates.current;
+      } else {
+        // Fallback to fixed rates
+        rate = {
+          eur_to_rub: EUR_TO_RUB_FIXED,
+          eur_to_usd: EUR_TO_USD_APPROX
+        };
+      }
+
+      const eur = rub / rate.eur_to_rub;
       if (currency === "eur") return eur;
-      return eur * EUR_TO_USD_APPROX;
+      return eur * rate.eur_to_usd;
     }
 
     function investedTotalInCurrency(currency){
       if (currency === "rub") return investedEvent.rub;
       if (currency === "eur") return investedEvent.eur;
-      return investedEvent.eur * EUR_TO_USD_APPROX;
+
+      // For USD, use HISTORICAL rate from Dec 31, 2025
+      const historicalRate = exchangeRates.historical["2025-12-31"] || {
+        eur_to_usd: EUR_TO_USD_APPROX
+      };
+      return investedEvent.eur * historicalRate.eur_to_usd;
     }
 
     function buildTable(prices){
@@ -376,14 +464,16 @@
           nowValue = (Number(h.amount)||0) * (Number(p)||0);
         } else if (h.asset === "YDEX"){
           const rubValue = (Number(h.amount)||0) * (Number(prices.YDEX_RUB)||0);
-          nowValue = rubToCurrency(rubValue, displayCurrency);
+          // CRITICAL: Use CURRENT rate for today's value
+          nowValue = rubToCurrency(rubValue, displayCurrency, false);
         }
 
         currentTotal += nowValue;
 
+        // CRITICAL: Use HISTORICAL rate for buy cost
         let buyCost = "—";
         if (Number.isFinite(h.buyCostRUB)){
-          buyCost = fmtMoney(rubToCurrency(h.buyCostRUB, displayCurrency), displayCurrency);
+          buyCost = fmtMoney(rubToCurrency(h.buyCostRUB, displayCurrency, true, h.date), displayCurrency);
         }
 
         const tr = document.createElement("tr");
@@ -419,6 +509,20 @@
       try{
         setLastUpdate("обновление…");
 
+        // Refresh current exchange rates if older than 1 hour
+        const now = new Date();
+        const needsRefresh = !exchangeRates.current.lastFetch ||
+          (now - exchangeRates.current.lastFetch) > 3600000;
+
+        if (needsRefresh) {
+          try {
+            const current = await fetchExchangeRates(null);
+            exchangeRates.current = { ...current, lastFetch: now };
+          } catch (e) {
+            console.warn("Failed to refresh current rates, using cached");
+          }
+        }
+
         const crypto = await fetchCryptoPrices(displayCurrency);
         const ydexRub = await fetchYdexLastRUB();
 
@@ -449,7 +553,18 @@
     });
 
     document.getElementById("toggleCurrencyBtn").textContent = "Валюта: EUR";
-    refresh();
+
+    // Initialize exchange rates then start the app
+    (async () => {
+      try {
+        setLastUpdate("инициализация курсов…");
+        await initializeExchangeRates();
+        await refresh();
+      } catch (e) {
+        console.error("Initialization error:", e);
+        setLastUpdate("ошибка инициализации");
+      }
+    })();
   </script>
 </body>
 </html>
