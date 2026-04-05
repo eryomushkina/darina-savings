@@ -312,13 +312,15 @@
     };
 
     const holdings = [
-      { date: "2025-12-31", occasion: "🎄 Новый год", asset: "YDEX", amount: 1,       buyCostRUB: 4567 },
-      { date: "2025-12-31", occasion: "🎄 Новый год", asset: "ETH",  amount: 0.01,    buyCostRUB: 2356 },
-      { date: "2025-12-31", occasion: "🎄 Новый год", asset: "BTC",  amount: 0.00034, buyCostRUB: 2357 },
-      { date: "2026-03-08", occasion: "🌷 8 марта",      asset: "BTC",  amount: 0.00048, buyCostRUB: 3114 },
-      { date: "2026-03-08", occasion: "🌷 8 марта",      asset: "ETH",  amount: 0.0077,  buyCostRUB: 1557 },
-      { date: "2026-03-08", occasion: "🌷 8 марта",      asset: "ROSN", amount: 5,       buyCostRUB: 2400 },
-      { date: "2026-03-08", occasion: "🌷 8 марта",      asset: "PLZL", amount: 1,       buyCostRUB: 2460 },
+      // eurRubRate = EUR/RUB exchange rate at time of purchase
+      { date: "2025-12-31", occasion: "🎄 Новый год", asset: "YDEX", amount: 1,       buyCostRUB: 4567, eurRubRate: 92.8 },
+      { date: "2025-12-31", occasion: "🎄 Новый год", asset: "ETH",  amount: 0.01,    buyCostRUB: 2356, eurRubRate: 92.8 },
+      { date: "2025-12-31", occasion: "🎄 Новый год", asset: "BTC",  amount: 0.00034, buyCostRUB: 2357, eurRubRate: 92.8 },
+      // March 8: USD/RUB=86.5, EUR/USD=1.1 (Frankfurter) → EUR/RUB=95.15
+      { date: "2026-03-08", occasion: "🌷 8 марта",      asset: "BTC",  amount: 0.00048, buyCostRUB: 3114, eurRubRate: 95.15 },
+      { date: "2026-03-08", occasion: "🌷 8 марта",      asset: "ETH",  amount: 0.0077,  buyCostRUB: 1557, eurRubRate: 95.15 },
+      { date: "2026-03-08", occasion: "🌷 8 марта",      asset: "ROSN", amount: 5,       buyCostRUB: 2400, eurRubRate: 95.15 },
+      { date: "2026-03-08", occasion: "🌷 8 марта",      asset: "PLZL", amount: 1,       buyCostRUB: 2460, eurRubRate: 95.15 },
     ];
 
     const investedEvent = { eur: 100, rub: 9280 };
@@ -449,8 +451,16 @@
       if (currency === "rub") {
         return holdings.reduce((sum, h) => sum + (h.buyCostRUB || 0), 0);
       }
-      // For EUR and USD: convert each holding's RUB purchase cost using historical rate
-      return holdings.reduce((sum, h) => sum + rubToCurrency(h.buyCostRUB, currency, true, h.date), 0);
+      if (currency === "eur") {
+        // Use per-holding eurRubRate (rate at time of purchase) for accurate EUR calculation
+        return holdings.reduce((sum, h) => sum + (h.buyCostRUB / (h.eurRubRate || EUR_TO_RUB_FIXED)), 0);
+      }
+      // For USD: convert EUR to USD using historical EUR/USD rate on purchase date
+      return holdings.reduce((sum, h) => {
+        const eurAmt = h.buyCostRUB / (h.eurRubRate || EUR_TO_RUB_FIXED);
+        const rate = (exchangeRates.historical[h.date] || exchangeRates.current);
+        return sum + eurAmt * (rate.eur_to_usd || EUR_TO_USD_APPROX);
+      }, 0);
     }
 
     function buildTable(prices){
@@ -566,6 +576,12 @@
       try {
         setLastUpdate("инициализация курсов…");
         await initializeExchangeRates();
+        // Override historical EUR/RUB with actual purchase-date rates from holdings
+        for (const h of holdings) {
+          if (h.eurRubRate && exchangeRates.historical[h.date]) {
+            exchangeRates.historical[h.date].eur_to_rub = h.eurRubRate;
+          }
+        }
         await refresh();
       } catch (e) {
         console.error("Initialization error:", e);
