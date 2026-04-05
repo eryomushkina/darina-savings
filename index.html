@@ -445,14 +445,12 @@
     }
 
     function investedTotalInCurrency(currency){
-      if (currency === "rub") return investedEvent.rub;
-      if (currency === "eur") return investedEvent.eur;
-
-      // For USD, use HISTORICAL rate from Dec 31, 2025
-      const historicalRate = exchangeRates.historical["2025-12-31"] || {
-        eur_to_usd: EUR_TO_USD_APPROX
-      };
-      return investedEvent.eur * historicalRate.eur_to_usd;
+      // Dynamically compute total invested from all holdings (supports multiple contributions)
+      if (currency === "rub") {
+        return holdings.reduce((sum, h) => sum + (h.buyCostRUB || 0), 0);
+      }
+      // For EUR and USD: convert each holding's RUB purchase cost using historical rate
+      return holdings.reduce((sum, h) => sum + rubToCurrency(h.buyCostRUB, currency, true, h.date), 0);
     }
 
     function buildTable(prices){
